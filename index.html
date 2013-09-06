@@ -17,23 +17,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     </head>
     
-    <body onload="getLocation();">
+    <body>
         <div id="map"></div>
         <div id="count"></div>
         <script>
-            var getLocation = function() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(coinmap, onError, {
-                        maximumAge: 300000,
-                        timeout: 10000,
-                        enableHighAccuracy: true
-                    });
-
-                } else {
-                    alert("GeoLocation is not available.");
-                }
-
-            };
+            $(document).ready(function() {
+                initialize();
+            });
         </script>
     </body>
 

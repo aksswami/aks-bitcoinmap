@@ -1,20 +1,57 @@
 var mapData = null;
 var map = null;
+var latitude = 40.02;
+var longitude = -87.023;
+var infowindow = null;
 
 function coinmap(position) {
-    var lat = null;
-    var lng = null;
     if (null !== position) {
-        lat = position.coords.latitude;
-        lng = position.coords.longitude;
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
     }
-    lat = 40.02;
-    lng = -87.023;
-    loadMap(lat, lng);
+
+    userLocation();
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(coinmap, onError, {
+            maximumAge: 300000,
+            timeout: 10000,
+            enableHighAccuracy: true
+        });
+
+    } else {
+        alert("GeoLocation is not available.");
+    }
+
+}
+
+function userLocation() {
+
+    var image = 'icons/food_bar.n.24.png';
+    var latLng = new google.maps.LatLng(latitude, longitude);
+    var my_marker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: 'My Position',
+        animation: google.maps.Animation.DROP,
+        icon: image
+
+    });
+    if (map !== null) {
+        setMarker(map);
+    }
+
+    var bounds = new google.maps.LatLngBounds();
+    bounds.extend(latLng);
+    map.fitBounds(bounds);
+    map.setCenter(latLng);
+    map.setZoom(10);
 }
 
 
-function loadMap(latitude, longitude) {
+function initialize() {
 
     var my_latLng = new google.maps.LatLng(latitude, longitude);
     var mapOptions = {
@@ -26,36 +63,14 @@ function loadMap(latitude, longitude) {
     };
 
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    var my_marker = new google.maps.Marker({
-        position: my_latLng,
-        map: map,
-        title: 'My Position',
-        animation: google.maps.Animation.DROP
 
+    infowindow = new google.maps.InfoWindow({
+        content: "loading..."
     });
-    //google.maps.event.addListener(my_marker, 'click', toggleBounce(my_marker));
+    getLocation();
 
-    var markers = [];
-    var user_radius = 1000000;
-    $.getJSON("http://overpass.osm.rambler.ru/cgi/interpreter?data=[out:json];(node[%22payment:bitcoin%22=yes];way[%22payment:bitcoin%22=yes];%3E;);out;", function (data) {
-        mapData = data;
-        $.each(data.elements, function (key, value) {
-
-            var latLng = new google.maps.LatLng(value.lat, value.lon);
-            var marker = new google.maps.Marker({
-                position: latLng,
-                animation: google.maps.Animation.DROP
-            });
-            //google.maps.event.addListener(marker, 'click', toggleBounce);
-            markers.push(marker);
-        });
-
-        var markerCluster = new MarkerClusterer(map, markers);
-        tooltipBubble(markers);
-
-
-        // Define the circle
-        /* var circle = new google.maps.Circle({
+    // Define the circle
+    /* var circle = new google.maps.Circle({
             map: map,
             clickable: false,
             // metres
@@ -79,30 +94,53 @@ function loadMap(latitude, longitude) {
             }
         }*/
 
+
+}
+
+function setMarker(map) {
+    //var bound = new google.maps.LatLngBounds();
+    var markers = [];
+    var user_radius = 1000000;
+    $.getJSON("http://overpass.osm.rambler.ru/cgi/interpreter?data=[out:json];(node[%22payment:bitcoin%22=yes];way[%22payment:bitcoin%22=yes];%3E;);out;", function (data) {
+        mapData = data;
+        $.each(data.elements, function (key, value) {
+
+            var latLng = new google.maps.LatLng(value.lat, value.lon);
+            var markerDetail = locationDetails(value.tags);
+            var marker = new google.maps.Marker({
+                position: latLng,
+                animation: google.maps.Animation.DROP,
+                html: markerDetail,
+                zIndex: 2
+            });
+            //bound.extend(latLng);
+            google.maps.event.addListener(marker, "click", function () {
+                //alert(this.html);
+                infowindow.setContent(this.html);
+                infowindow.open(map, this);
+            });
+
+            //google.maps.event.addListener(marker, 'click', toggleBounce);
+            markers.push(marker);
+        });
+        //map.fitBounds(bound);
+        var markerCluster = new MarkerClusterer(map, markers);
     });
 }
 
-
-function tooltipBubble(markers) {
-    if (null !== mapData) {
-        var i = 0;
-        $.each(mapData.elements, function (key, value) {
-            var infoBubble = new InfoBubble({
-                map: map,
-                content: "<a href='" + value.node + "'>" + value.tags + "</a>",
-                hideCloseButton: false,
-            });
-
-            //infoBubble.open(map, this.marker);
-
-            google.maps.event.addListener(markers[i], 'click', function(infoBubble, i) {
-                if (!infoBubble.isOpen()) {
-                    infoBubble.open(map, markers[i]);
-                }
-            });
-        });
-        i++;
+function locationDetails(tags) {
+    var details ;
+    if (undefined !== tags) {
+        if(undefined !== tags.name)
+            details = '<strong>' + tags.name + '</strong></br>';
+        if(undefined !== tags.phone)
+            details += '<strong>Phone : </strong><em>' + tags.phone + '</em></br>';
+        if(undefined !== tags.website)
+            details += '<a href="' + tags.website + '">' + tags.website + '</a>';
+           
+            alert(details);
     }
+    return details;
 }
 
 function onError(error) {
