@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <title>BitCoinMap</title>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <script src="js/jquery.js"></script>
+        <script src="http://maps.google.com/maps/api/js?key=AIzaSyA-zLxKvbiIbO8uR20Z5DemPXYh1F3bm1M&sensor=false"></script>
+        <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
+        <script src="js/infoBubble.js"></script>
+        <script src="js/bitcoinmap.js"></script>
+        <!-- <script src="js/coinmap-icons.js"></script>-->
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" type="image/png" href="bitcoin.png" />
+        <meta name="keywords" content="coinmap,map,bitcoin,openstreetmap" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    </head>
+    
+    <body onload="getLocation();">
+        <div id="map"></div>
+        <div id="count"></div>
+        <script>
+            var getLocation = function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(coinmap, onError, {
+                        maximumAge: 300000,
+                        timeout: 10000,
+                        enableHighAccuracy: true
+                    });
+
+                } else {
+                    alert("GeoLocation is not available.");
+                }
+
+            };
+        </script>
+    </body>
+
+</html>
