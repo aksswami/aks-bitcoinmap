@@ -115,7 +115,6 @@ function setMarker(map) {
             });
             //bound.extend(latLng);
             google.maps.event.addListener(marker, "click", function () {
-                //alert(this.html);
                 infowindow.setContent(this.html);
                 infowindow.open(map, this);
             });
@@ -137,8 +136,6 @@ function locationDetails(tags) {
             details += '<strong>Phone : </strong><em>' + tags.phone + '</em></br>';
         if(undefined !== tags.website)
             details += '<a href="' + tags.website + '">' + tags.website + '</a>';
-           
-            alert(details);
     }
     return details;
 }
