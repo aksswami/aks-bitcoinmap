@@ -224,6 +224,7 @@ function calcRoute(start, end) {
             $('#direction_panel').empty();
             directionsDisplay.setDirections(response);
         } else {
+            $('#direction_panel').empty();
             alert("Sorry, Service not available for this route.");
         }
     });
