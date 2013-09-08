@@ -3,6 +3,8 @@ var map = null;
 var latitude = 40.02;
 var longitude = -87.023;
 var infowindow = null;
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
 
 function coinmap(position) {
     if (null !== position) {
@@ -52,7 +54,7 @@ function userLocation() {
 
 
 function initialize() {
-
+    directionsDisplay = new google.maps.DirectionsRenderer();
     var my_latLng = new google.maps.LatLng(latitude, longitude);
     var mapOptions = {
         zoom: 8,
@@ -63,7 +65,8 @@ function initialize() {
     };
 
     map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
+    directionsDisplay.setMap(map);
+    directionsDisplay.setPanel(document.getElementById('direction_panel'));
     infowindow = new google.maps.InfoWindow({
         content: "loading..."
     });
@@ -111,18 +114,20 @@ function setMarker(map) {
                     i++;
                     var latLng = new google.maps.LatLng(value.lat, value.lon);
                     var markerDetail = locationDetails(value.tags);
+                    var buttonDetails = routeButton(latLng);
                     var icon_image = determineIcon(value.tags);
                     var marker = new google.maps.Marker({
                         position: latLng,
                         animation: google.maps.Animation.DROP,
-                        html: markerDetail,
+                        html: (markerDetail + buttonDetails),
                         zIndex: 2,
-                        icon : icon_image
+                        icon: icon_image
                     });
                     //bound.extend(latLng);
                     google.maps.event.addListener(marker, "click", function () {
                         infowindow.setContent(this.html);
                         infowindow.open(map, this);
+
                     });
 
                     //google.maps.event.addListener(marker, 'click', toggleBounce);
@@ -137,7 +142,7 @@ function setMarker(map) {
 }
 
 function locationDetails(tags) {
-    var details;
+    var details = "</br> ";
     if (undefined !== tags) {
         if (undefined !== tags.name)
             details = '<strong>' + tags.name + '</strong></br>';
@@ -147,6 +152,22 @@ function locationDetails(tags) {
             details += '<a href="' + tags.website + '">' + tags.website + '</a>';
     }
     return details;
+}
+
+function routeButton(latLng) {
+    var rbutton = "</br> ";
+    if (undefined !== latLng) {
+        var abc = 'new google.maps.LatLng' + latLng.toString();
+        rbutton = '<button onclick="routeMyPosition(' + abc + ');">Direction</button>';
+    }
+    return rbutton;
+}
+
+function routeMyPosition(abc) {
+    console.log(abc);
+    $('#direction_panel').height($('#map').height());
+    $('#direction_panel').html('<img src="img/waiting.gif"></img>');
+    calcRoute(new google.maps.LatLng(latitude, longitude), abc);
 }
 
 function onError(error) {
@@ -173,16 +194,15 @@ function determineIcon(tags) {
         if (!icon_mapping.hasOwnProperty(keyvalue)) {
             //The current property is not a direct property of p
             continue;
-        }
-        else{
+        } else {
             split_kv = keyvalue.split(':');
-            k  = split_kv[0];
+            k = split_kv[0];
             v = split_kv[1];
             temp = tags[k];
-            
-            if(undefined === temp)
+
+            if (undefined === temp)
                 continue;
-            if( temp === v){
+            if (temp === v) {
                 icon_id = icon_mapping[keyvalue];
                 break;
             }
@@ -193,3 +213,18 @@ function determineIcon(tags) {
     return icon;
 }
 
+function calcRoute(start, end) {
+    var request = {
+        origin: start,
+        destination: end,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+    directionsService.route(request, function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            $('#direction_panel').empty();
+            directionsDisplay.setDirections(response);
+        } else {
+            alert("Sorry, Service not available for this route.");
+        }
+    });
+}
