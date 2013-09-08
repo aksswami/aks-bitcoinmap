@@ -158,7 +158,7 @@ function routeButton(latLng) {
     var rbutton = "</br> ";
     if (undefined !== latLng) {
         var abc = 'new google.maps.LatLng' + latLng.toString();
-        rbutton = '<button onclick="routeMyPosition(' + abc + ');">Direction</button>';
+        rbutton = '</br><button onclick="routeMyPosition(' + abc + ');">Direction</button>';
     }
     return rbutton;
 }
