@@ -111,11 +111,13 @@ function setMarker(map) {
                     i++;
                     var latLng = new google.maps.LatLng(value.lat, value.lon);
                     var markerDetail = locationDetails(value.tags);
+                    var icon_image = determineIcon(value.tags);
                     var marker = new google.maps.Marker({
                         position: latLng,
                         animation: google.maps.Animation.DROP,
                         html: markerDetail,
-                        zIndex: 2
+                        zIndex: 2,
+                        icon : icon_image
                     });
                     //bound.extend(latLng);
                     google.maps.event.addListener(marker, "click", function () {
@@ -161,7 +163,33 @@ function toggleBounce(marker) {
     }
 }
 
-function determineIcon(tags){
-    
-
+function determineIcon(tags) {
+    var icon_id = 'bitcoin';
+    var split_kv = null;
+    var k = null;
+    var v = null;
+    var temp = undefined;
+    for (keyvalue in icon_mapping) {
+        if (!icon_mapping.hasOwnProperty(keyvalue)) {
+            //The current property is not a direct property of p
+            continue;
+        }
+        else{
+            split_kv = keyvalue.split(':');
+            k  = split_kv[0];
+            v = split_kv[1];
+            temp = tags[k];
+            
+            if(undefined === temp)
+                continue;
+            if( temp === v){
+                icon_id = icon_mapping[keyvalue];
+                break;
+            }
+        }
+    }
+    var icon = icon_mapped[icon_id];
+    //console.log(icon);
+    return icon;
 }
+
