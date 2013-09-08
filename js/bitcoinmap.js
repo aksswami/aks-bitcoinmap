@@ -29,7 +29,7 @@ function getLocation() {
 
 function userLocation() {
 
-    var image = 'icons/food_bar.n.24.png';
+    var image = 'img/my_location.png';
     var latLng = new google.maps.LatLng(latitude, longitude);
     var my_marker = new google.maps.Marker({
         position: latLng,
