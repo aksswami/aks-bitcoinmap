@@ -160,3 +160,8 @@ function toggleBounce(marker) {
         marker.setAnimation(google.maps.Animation.BOUNCE);
     }
 }
+
+function determineIcon(tags){
+    
+
+}
