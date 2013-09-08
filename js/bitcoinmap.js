@@ -103,38 +103,45 @@ function setMarker(map) {
     var user_radius = 1000000;
     $.getJSON("http://overpass.osm.rambler.ru/cgi/interpreter?data=[out:json];(node[%22payment:bitcoin%22=yes];way[%22payment:bitcoin%22=yes];%3E;);out;", function (data) {
         mapData = data;
+        var i = 0;
         $.each(data.elements, function (key, value) {
+            var tag = value.tags;
+            if (undefined !== tag) {
+                if (tag['payment:bitcoin'] == 'yes') {
+                    i++;
+                    var latLng = new google.maps.LatLng(value.lat, value.lon);
+                    var markerDetail = locationDetails(value.tags);
+                    var marker = new google.maps.Marker({
+                        position: latLng,
+                        animation: google.maps.Animation.DROP,
+                        html: markerDetail,
+                        zIndex: 2
+                    });
+                    //bound.extend(latLng);
+                    google.maps.event.addListener(marker, "click", function () {
+                        infowindow.setContent(this.html);
+                        infowindow.open(map, this);
+                    });
 
-            var latLng = new google.maps.LatLng(value.lat, value.lon);
-            var markerDetail = locationDetails(value.tags);
-            var marker = new google.maps.Marker({
-                position: latLng,
-                animation: google.maps.Animation.DROP,
-                html: markerDetail,
-                zIndex: 2
-            });
-            //bound.extend(latLng);
-            google.maps.event.addListener(marker, "click", function () {
-                infowindow.setContent(this.html);
-                infowindow.open(map, this);
-            });
-
-            //google.maps.event.addListener(marker, 'click', toggleBounce);
-            markers.push(marker);
+                    //google.maps.event.addListener(marker, 'click', toggleBounce);
+                    markers.push(marker);
+                }
+            }
         });
+        console.log(i);
         //map.fitBounds(bound);
         var markerCluster = new MarkerClusterer(map, markers);
     });
 }
 
 function locationDetails(tags) {
-    var details ;
+    var details;
     if (undefined !== tags) {
-        if(undefined !== tags.name)
+        if (undefined !== tags.name)
             details = '<strong>' + tags.name + '</strong></br>';
-        if(undefined !== tags.phone)
+        if (undefined !== tags.phone)
             details += '<strong>Phone : </strong><em>' + tags.phone + '</em></br>';
-        if(undefined !== tags.website)
+        if (undefined !== tags.website)
             details += '<a href="' + tags.website + '">' + tags.website + '</a>';
     }
     return details;
