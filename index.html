@@ -5,26 +5,21 @@
         <title>BitCoinMap</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <meta http-equiv="content-type" content="text/html"; charset="utf-8">
+        <meta http-equiv="content-type" content="text/html" ; charset="utf-8">
         <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen">
-        
         <script src="js/libjs/jquery.js"></script>
         <script src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false"></script>
         <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
-        
         <script src="js/bitcoinmap.js"></script>
         <script src="js/bitcoinmap_icons.js"></script>
         <!-- <script src="js/coinmap-icons.js"></script>-->
         <link href="css/style.css" rel="stylesheet" type="text/css" />
         <link rel="icon" type="image/png" href="img/bitcoin.png" />
-        
     </head>
     
     <body>
-        
         <div id="map"></div>
         <div id="direction_panel"></div>
-        
         <script>
             $(document).ready(function() {
                 initialize();
@@ -34,11 +29,25 @@
             <a href="bitcoin:1HyHP3ygE7mG7YBfkkMHfMvjh6zqcLiXzw">1HyHP3ygE7mG7YBfkkMHfMvjh6zqcLiXzw</a>| Source code available from
             <a href="https://github.com/aksswami/aks-bitcoinmap.git" target="_blank">Github</a>
         </div>
-        
         <script src="js/libjs/infoBubble.js"></script>
-        
         <script src="js/libjs/bootstrap/bootstrap.min.js"></script>
-        
+        <script>
+            //Google analytics Tracking Code
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function() {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-43873080-1', 'thestartupzone.in');
+            ga('send', 'pageview');
+        </script>
     </body>
 
 </html>
