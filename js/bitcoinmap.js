@@ -5,6 +5,7 @@ var longitude = -87.023;
 var infowindow = null;
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
+var directionsRenderer = [];
 
 function coinmap(position) {
     if (null !== position) {
@@ -167,7 +168,7 @@ function routeMyPosition(abc) {
     console.log(abc);
     $('#direction_panel').height($('#map').height());
     $('#direction_panel').html('<img src="img/waiting.gif"></img>');
-    calcRoute(new google.maps.LatLng(latitude, longitude), abc);
+    requestDirections(new google.maps.LatLng(latitude, longitude), abc, true);
 }
 
 function onError(error) {
@@ -228,4 +229,98 @@ function calcRoute(start, end) {
             alert("Sorry, Service not available for this route.");
         }
     });
+}
+
+
+function requestDirections(start, end, alter_route) {
+
+    var request = {
+        origin: start,
+        destination: end,
+        travelMode: google.maps.DirectionsTravelMode.DRIVING,
+        provideRouteAlternatives: alter_route
+    };
+    if (directionsRenderer.length != 0) {
+        for (var j = 0; j < directionsRenderer.length; j++) {
+            directionsRenderer[j].setMap(null);
+        }
+        directionsRenderer = [];
+    }
+    directionsService.route(request, function (result, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            if (alter_route) {
+                //var rendererOptions = getRendererOptions(true);
+                for (var i = 0; i < result.routes.length; i++) {
+                    renderDirections(result, i);
+                }
+            } else {
+                //var rendererOptions = getRendererOptions(false);
+                renderDirections(result, 0);
+            }
+        } else {
+            $('#direction_panel').empty();
+            alert("Sorry, Service not available for this route.");
+        }
+    });
+}
+
+function renderDirections(result, routeToDisplay) {
+    if (routeToDisplay == 0) {
+        var _colour = '#00458E';
+        var _strokeWeight = 4;
+        var _strokeOpacity = 1.0;
+        var _suppressMarkers = false;
+    } else {
+        var _colour = '#'+Math.floor(Math.random()*16777215).toString(16);;
+        var _strokeWeight = 4;
+        var _strokeOpacity = 0.7;
+        var _suppressMarkers = false;
+    }
+
+    // create new renderer object
+    directionsRenderer[routeToDisplay] = new google.maps.DirectionsRenderer({
+        draggable: false,
+        hideRouteList: false,
+        suppressMarkers: _suppressMarkers,
+        polylineOptions: {
+            strokeColor: _colour,
+            strokeWeight: _strokeWeight,
+            strokeOpacity: _strokeOpacity
+        }
+    });
+    $('#direction_panel').empty();
+
+    directionsRenderer[routeToDisplay].setMap(map);
+    directionsRenderer[routeToDisplay].setPanel(document.getElementById('direction_panel'));
+    directionsRenderer[routeToDisplay].setDirections(result);
+    directionsRenderer[routeToDisplay].setRouteIndex(routeToDisplay);
+}
+
+function getRendererOptions(alter_route) {
+    if (alter_route) {
+        var _colour = '#00458E';
+        var _strokeWeight = 4;
+        var _strokeOpacity = 1.0;
+        var _suppressMarkers = false;
+    } else {
+        var _colour = '#ED1C24';
+        var _strokeWeight = 2;
+        var _strokeOpacity = 0.7;
+        var _suppressMarkers = false;
+    }
+
+    var polylineOptions = {
+        strokeColor: _colour,
+        strokeWeight: _strokeWeight,
+        strokeOpacity: _strokeOpacity
+    };
+
+    var rendererOptions = {
+        draggable: true,
+        suppressMarkers: _suppressMarkers,
+        polylineOptions: polylineOptions,
+        hideRouteList: true
+    };
+
+    return rendererOptions;
 }
