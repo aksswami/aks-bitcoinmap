@@ -1,43 +1,118 @@
-body {
-    border: 0px;
-    margin: 0px;
-    padding: 0px;
-}
+
 #map {
-    left: 0px;
-    top: 0px;
-    position: absolute;
-    width: 75%;
-    height: 100%;
-    z-index: 0;
-    float:left;
+
 }
+
 #direction_panel {
-    float:right;
-    width: 25%;
+
     height: 100%;
+
     overflow:scroll;
+
 }
+
 #logo {
+
     right: 10px;
+
     top: 10px;
+
     position: absolute;
+
     z-index: 7;
+
     font-size: xx-large;
+
     font-style: italic;
+
 }
+
+/* Sticky footer styles
+-------------------------------------------------- */
+
+html, body {
+
+    height: 100%;
+
+    width : 100%;
+
+    /* The html and body elements cannot have any padding or margin. */
+
+}
+
+/* Wrapper for page content to push down footer */
+
+#wrap {
+
+    min-height: 100%;
+
+    height: auto !important;
+
+    height: 100%;
+
+    /* Negative indent footer by its height */
+
+    margin: 0 auto -60px;
+
+    /* Pad bottom by footer height */
+
+    padding: 0 0 60px;
+
+}
+
+/* Set the fixed height of the footer here */
+
 #footer {
-    font-size: 13px;
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 5px #bbb;
-    padding: 0 5px;
-    color: #333;
-    z-index: 7;
-    left: 0px;
+
+    height: 40px;
+
+    background-color: rgba(255, 255, 255, 0.99);
+
     bottom: 0px;
-    line-height: 150%;
+
+    position: absolute;
+
 }
-a {
-    color: #0078A8;
+
+/* Custom page CSS
+-------------------------------------------------- */
+
+/* Not required for template or sticky footer method. */
+
+.main {
+
+    padding-top: 50px;
+
+    margin-left: 5px;
+
+    margin-right: 5px;
+
+    padding-left: 5px;
+
+}
+
+#wrap > .container {
+
+    padding: 40px 15px 0;
+
+}
+
+.container .credit {
+
+    margin: 20px 0;
+
+}
+
+#footer > .container {
+
+    padding-left: 15px;
+
+    padding-right: 15px;
+
+}
+
+code {
+
+    font-size: 80%;
+
 }
